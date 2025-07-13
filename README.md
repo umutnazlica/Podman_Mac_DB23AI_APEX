@@ -23,17 +23,17 @@ This guide includes information related how to:
 
 - A Running Podman on MacOS. (If not already installed , BREW can be used to install Podman)
    Brew Install (https://brew.sh/)
-    brew install podman
+   > brew install podman
    Podman install instructions can be found : https://podman.io/docs/installation
-- Existing account to Login container-registry.oracle.com
+- Existing account for login to container-registry.oracle.com to download the container images
 - SQLCL
-   brew install sqlcl
+   > brew install sqlcl
    sqlcl requires Java 11+. You can install the latest version with:
-     brew install --cask temurin
-     export PATH=/opt/homebrew/Caskroom/sqlcl/25.1.1.113.2054/sqlcl/bin:"$PATH"
+   > brew install --cask temurin
+   > export PATH=/opt/homebrew/Caskroom/sqlcl/25.1.1.113.2054/sqlcl/bin:"$PATH"
  - Skopeo - tool for managing images and can be installed using brew.
-      brew install skopeo
-      brew install jq
+   > brew install skopeo
+   > brew install jq
       
    
 
