@@ -55,19 +55,19 @@ This guide includes information related how to:
 % podman machine start <br>
 % podman machine ls <br>
 
-**NAME                     VM TYPE     CREATED        LAST UP            CPUS        MEMORY      DISK SIZE**
-**podman-machine-default*  applehv     2 minutes ago  Currently running  4           8GiB        50GiB**
+![Image](https://github.com/user-attachments/assets/cd7fba3d-30c0-4276-94ee-0cfe8b63288e)
 
---- Login to Oracle Container Registry
-> podman login container-registry.oracle.com
+--- Login to Oracle Container Registry <br>
+% podman login container-registry.oracle.com
 
-**Username: <YourRegisteredEMailAddress>**
-**Password: <YourPassword>**
-**Login Succeeded!**
-**You need to have registerd user for container-registry.oracle.com to be able to download images,and standard terms and restrictions should be accepted if you login for the first time**
+> Username: "YourRegisteredEMailAddress" <br>
+  Password: "YourPassword"<br> 
+  Login Succeeded! <br>
+  
+> You need to have registered user for container-registry.oracle.com to be able to download container images,and standard terms and restrictions should be accepted if you login for the first time.
 
---- Confirm available images using skopeo
-> skopeo inspect docker://container-registry.oracle.com/database/free:23.7.0.0-arm64 --tls-verify=false | jq '[.RepoTags]'
+--- Confirm available images using skopeo <br>
+% skopeo inspect docker://container-registry.oracle.com/database/free:23.7.0.0-arm64 --tls-verify=false | jq '[.RepoTags]' <br>
 
 --- Pull latest Oracle Database 23ai Free image
 > podman pull container-registry.oracle.com/database/free:latest --tls-verify=false
