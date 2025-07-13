@@ -74,27 +74,32 @@ This guide includes information related how to:
 --- Pull latest Oracle Database 23ai Free image <br>
 % podman pull container-registry.oracle.com/database/free:latest --tls-verify=false <br>
 % podman image list <br>
+
 ![Image](https://github.com/user-attachments/assets/570638b5-86a9-47db-babe-883a63c48646)
 
---- Create persistent volume called oradata, verify the volume properties
-> podman volume create --label version=23ai oradata
-> podman volume inspect oradata
+--- Create persistent volume called oradata, verify the volume properties <br>
+% podman volume create --label version=23ai oradata <br>
+% podman volume inspect oradata <br>
 
---- Setup Podman secret to manage the database password
-> pwd **make sure you are in the right folder to store the text file, if not cd to that folder**
-> echo -n <TypeYourDBPasswordHere> > ./oradbsecret.txt
-> cat oradbsecret.txt **verify your password is created**
-> podman secret create orasecret ./oradbsecret.txt
-> podman secret ls
-**ID                         NAME        DRIVER      CREATED             UPDATED**
-**96312af6ae84f4f0919d92c9f  orasecret   file        About a minute ago  About a minute ago**
+![Image](https://github.com/user-attachments/assets/0d4a4271-7f08-434e-ad8c-2e3943744951)
 
---- Create a network in environment so that containers in this network can communicate with each other using a hostname, view the properties
-> podman network create oranetwork
-> podman network inspect oranetwork
+--- Setup Podman secret to manage the database password <br>
+% pwd <br>
+> make sure you are in the right folder to store the text file, if not cd to that folder <br>
+% echo -n <TypeYourDBPasswordHere> > ./oradbsecret.txt <br>
+% cat oradbsecret.txt <br>
+> verify your password is created <br>
+% podman secret create orasecret ./oradbsecret.txt <br>
+% podman secret ls <br>
 
---- Start the container
-> podman run --detach --volume oradata:/opt/oracle/oradata \
+![Image](https://github.com/user-attachments/assets/4d596d1e-b47e-4813-973b-765537abbb88)
+
+--- Create a network in environment so that containers in this network can communicate with each other using a hostname, view the properties. <br>
+% podman network create oranetwork <br>
+% podman network inspect oranetwork <br>
+
+--- Start the container <br>
+% podman run --detach --volume oradata:/opt/oracle/oradata \
 --secret orasecret,type=env,target=ORACLE_PWD \
 --publish 1521:1521 \
 --name oracle23ai \
@@ -102,16 +107,15 @@ This guide includes information related how to:
 --network oranetwork \
 container-registry.oracle.com/database/free:latest
 
-> podman ps 
-**wait antil container reports healthy**
-**CONTAINER ID  IMAGE                                               COMMAND               CREATED             STATUS                       PORTS                   NAMES**
-**d3d00b45f8f2  container-registry.oracle.com/database/free:latest  /bin/bash -c $ORA...  About a minute ago  Up About a minute (healthy)  0.0.0.0:1521->1521/tcp  oracle23ai**
+% podman ps<br> 
 
---- View database log
-> podman logs oracle23ai
+![Image](https://github.com/user-attachments/assets/a793bbd4-75c0-4112-ac74-992746b6d9fb)
 
---- Connect to database from your mac terminal
-> sql sys/<TypeYourDBPasswordHere>@//localhost:1521/FREE as sysdba
+--- View database log <br> 
+% podman logs oracle23ai <br> 
+
+--- Connect to database from your mac terminal <br> 
+% sql sys/<TypeYourDBPasswordHere>@//localhost:1521/FREE as sysdba
 
 Connected to:
 Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free**
