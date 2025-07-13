@@ -21,10 +21,10 @@ This guide includes information related how to:
 
 ## 🧰 Prerequisites
 
-- A Running Podman on MacOS. (If not already installed , BREW can be used to install Podman)
-   Brew Install (https://brew.sh/)
+- A Running Podman on MacOS. (If not already installed , BREW can be used to install Podman).
+   - Brew Install (https://brew.sh/)
    > brew install podman
-   Podman install instructions can be found : https://podman.io/docs/installation
+   **Podman install instructions can be found : https://podman.io/docs/installation**
 - Existing account for login to container-registry.oracle.com to download the container images
 - SQLCL
    > brew install sqlcl
