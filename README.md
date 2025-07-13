@@ -23,42 +23,68 @@ This guide includes information related how to:
 
 - A Running Podman on MacOS. (If not already installed , BREW can be used to install Podman).  
  - Brew Install (https://brew.sh/)  
-   % brew install podman  
+   ```bash
+   brew install podman
+   ```  
    Podman install instructions can be found : https://podman.io/docs/installation
 - Existing account for login to container-registry.oracle.com to download the container images
 - SQLCL<br>
-  % brew install sqlcl<br>
+  ```bash
+  brew install sqlcl
+  ```
   sqlcl requires Java 11+. You can install the latest version with:<br>
-  % brew install --cask temurin<br>
-  % export PATH=/opt/homebrew/Caskroom/sqlcl/25.1.1.113.2054/sqlcl/bin:"$PATH"<br>
- - Skopeo recommended. (tool for managing images and can be installed using brew)<br>
-  % brew install skopeo<br>
-  % brew install jq<br>
+  ```bash
+  brew install --cask temurin
+  ```
+  ```bash
+  export PATH=/opt/homebrew/Caskroom/sqlcl/25.1.1.113.2054/sqlcl/bin:"$PATH"
+  ```
+- Skopeo recommended. (tool for managing images and can be installed using brew)<br>
+  ```bash
+  brew install skopeo
+  ```
+  ```bash
+  brew install jq
+  ```
 ---
 
 ### ⚙️ Setup Instructions
 
 --- Check podman version <br>
-% podman -v <br>
+```bash
+podman -v
+```
 > podman version 5.5.2 
 
 --- Confirm current hardware platform <br>
-% arch <br>
+```bash
+arch
+```
 > arm64 
 
 --- Check MacOS version <br>
-% sw_vers -ProductVersion<br>
+```bash
+sw_vers -ProductVersion
+```
 >14.7.6 
 
 --- Initialize VM <br>
-% podman machine init --cpus 4 --memory 8192 --disk-size 50 <br>
-% podman machine start <br>
-% podman machine ls <br>
+```bash
+podman machine init --cpus 4 --memory 8192 --disk-size 50
+```
+```bash
+podman machine start
+```
+```bash
+podman machine ls
+```
 
 ![Image](https://github.com/user-attachments/assets/cd7fba3d-30c0-4276-94ee-0cfe8b63288e)
 
 --- Login to Oracle Container Registry <br>
-% podman login container-registry.oracle.com
+```bash
+podman login container-registry.oracle.com
+```
 
 > Username: "YourRegisteredEMailAddress" <br>
   Password: "YourPassword"<br> 
@@ -67,68 +93,101 @@ This guide includes information related how to:
 > You need to have registered user for container-registry.oracle.com to be able to download container images,and standard terms and restrictions should be accepted if you login for the first time.
 
 --- Confirm available images using skopeo <br>
-% skopeo inspect docker://container-registry.oracle.com/database/free:23.7.0.0-arm64 --tls-verify=false | jq '[.RepoTags]' <br>
-
+```bash
+skopeo inspect docker://container-registry.oracle.com/database/free:23.7.0.0-arm64 --tls-verify=false | jq '[.RepoTags]'
+```
 ![Image](https://github.com/user-attachments/assets/c431beb7-2267-4cc8-86ed-a69f2889d763)
 
 --- Pull latest Oracle Database 23ai Free image <br>
-% podman pull container-registry.oracle.com/database/free:latest --tls-verify=false <br>
-% podman image list <br>
+```bash
+podman pull container-registry.oracle.com/database/free:latest --tls-verify=false
+```
+```bash
+podman image list
+```
 
 ![Image](https://github.com/user-attachments/assets/570638b5-86a9-47db-babe-883a63c48646)
 
 --- Create persistent volume called oradata, verify the volume properties <br>
-% podman volume create --label version=23ai oradata <br>
-% podman volume inspect oradata <br>
+```bash
+podman volume create --label version=23ai oradata
+```
+```bash
+podman volume inspect oradata
+```
 
 ![Image](https://github.com/user-attachments/assets/0d4a4271-7f08-434e-ad8c-2e3943744951)
 
 --- Setup Podman secret to manage the database password <br>
-% pwd <br>
-> make sure you are in the right folder to store the text file, if not cd to that folder <br>
-% echo -n <TypeYourDBPasswordHere> > ./oradbsecret.txt <br>
-% cat oradbsecret.txt <br>
-> verify your password is created <br>
-% podman secret create orasecret ./oradbsecret.txt <br>
-% podman secret ls <br>
+```bash
+pwd
+```
+make sure you are in the right folder to store the text file, if not cd to that folder <br>
+```bash
+echo -n <TypeYourDBPasswordHere> > ./oradbsecret.txt
+```
+```bash
+cat oradbsecret.txt
+```
+```bash
+podman secret create orasecret ./oradbsecret.txt
+```
+```bash
+podman secret ls
+```
 
 ![Image](https://github.com/user-attachments/assets/4d596d1e-b47e-4813-973b-765537abbb88)
 
 --- Create a network in environment so that containers in this network can communicate with each other using a hostname, view the properties. <br>
-% podman network create oranetwork <br>
-% podman network inspect oranetwork <br>
+```bash
+podman network create oranetwork
+```
+```bash
+podman network inspect oranetwork
+```
+
+![Image](https://github.com/user-attachments/assets/eda8d846-7b94-4be7-8d49-39e03a6381e8)
 
 --- Start the container <br>
-% podman run --detach --volume oradata:/opt/oracle/oradata \
+```bash
+podman run --detach --volume oradata:/opt/oracle/oradata \
 --secret orasecret,type=env,target=ORACLE_PWD \
 --publish 1521:1521 \
 --name oracle23ai \
 --hostname oracle23ai \
 --network oranetwork \
 container-registry.oracle.com/database/free:latest
+```
 
-% podman ps<br> 
+```bash
+podman ps 
+```
 
 ![Image](https://github.com/user-attachments/assets/a793bbd4-75c0-4112-ac74-992746b6d9fb)
 
 --- View database log <br> 
-% podman logs oracle23ai <br> 
-
+```bash
+podman logs oracle23ai
+```
 --- Connect to database from your mac terminal <br> 
-% sql sys/<TypeYourDBPasswordHere>@//localhost:1521/FREE as sysdba
+```bash
+sql sys/"TypeYourDBPasswordHere"@//localhost:1521/FREE as sysdba
+```
 
 Connected to:
 Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free**
 Version 23.8.0.25.04**
 
-SQL> select INSTANCE_NAME, HOST_NAME, VERSION_FULL, EDITION from v$instance;
+```bash
+select INSTANCE_NAME, HOST_NAME, VERSION_FULL, EDITION from v$instance;
+```
 
-INSTANCE_NAME    HOST_NAME     VERSION_FULL    EDITION    
-________________ _____________ _______________ __________ 
-FREE             oracle23ai    23.8.0.25.04    FREE  
+![Image](https://github.com/user-attachments/assets/641aa5a1-44cf-4e0a-a5b7-9769e7d64443)
 
---- Connect to database from inside the container
-> podman exec -it oracle23ai sqlplus / as sysdba
+--- Connect to database from inside the container <br>
+```bash
+podman exec -it oracle23ai sqlplus / as sysdba
+```
 
 Connected to:
 Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free
@@ -136,13 +195,12 @@ Version 23.8.0.25.04
 
 SQL> select INSTANCE_NAME, HOST_NAME, VERSION_FULL, EDITION from v$instance;
 
-INSTANCE_NAME    HOST_NAME     VERSION_FULL    EDITION    
-________________ _____________ _______________ __________ 
-FREE             oracle23ai    23.8.0.25.04    FREE  
+![Image](https://github.com/user-attachments/assets/641aa5a1-44cf-4e0a-a5b7-9769e7d64443)
 
---- Connect to container shell
-> podman exec -ti oracle23ai /bin/sh
-
+--- Connect to container shell <br>
+ ```bash
+podman exec -it oracle23ai /bin/sh 
+ ```
 
 
 
