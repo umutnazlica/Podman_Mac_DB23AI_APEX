@@ -69,12 +69,12 @@ This guide includes information related how to:
 --- Confirm available images using skopeo <br>
 % skopeo inspect docker://container-registry.oracle.com/database/free:23.7.0.0-arm64 --tls-verify=false | jq '[.RepoTags]' <br>
 
---- Pull latest Oracle Database 23ai Free image
-> podman pull container-registry.oracle.com/database/free:latest --tls-verify=false
-> podman image list
+![Image](https://github.com/user-attachments/assets/c431beb7-2267-4cc8-86ed-a69f2889d763)
 
-**REPOSITORY                                   TAG         IMAGE ID      CREATED      SIZE**
-**container-registry.oracle.com/database/free  latest      a06de2558e27  7 weeks ago  9.28 GB**
+--- Pull latest Oracle Database 23ai Free image <br>
+% podman pull container-registry.oracle.com/database/free:latest --tls-verify=false <br>
+% podman image list <br>
+![Image](https://github.com/user-attachments/assets/570638b5-86a9-47db-babe-883a63c48646)
 
 --- Create persistent volume called oradata, verify the volume properties
 > podman volume create --label version=23ai oradata
