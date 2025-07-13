@@ -9,7 +9,7 @@ This guide includes information related how to run the latest Oracle 23ai (23.7.
 
 This guide includes information related how to:
 
-- ✅ Download the latest Oracle Database 23ai Free image, Start Oracle 23ai free database using Podman.
+- ✅ Download the latest Oracle Database 23ai Free image, start Oracle 23ai free database using Podman.
 - ✅ Check Oracle Alert log file, connect to database using several options.
 - ✅ Download the Oracle ORDS image, Start ORDS using Podman.
 - 📦 Manually install and configure APEX ver 24.2.
@@ -21,42 +21,39 @@ This guide includes information related how to:
 
 ## 🧰 Prerequisites
 
-- A Running Podman on MacOS. (If not already installed , BREW can be used to install Podman).
-   - Brew Install (https://brew.sh/)
-   > brew install podman
-   **Podman install instructions can be found : https://podman.io/docs/installation**
+- A Running Podman on MacOS. (If not already installed , BREW can be used to install Podman).  
+ - Brew Install (https://brew.sh/)  
+   % brew install podman  
+   Podman install instructions can be found : https://podman.io/docs/installation
 - Existing account for login to container-registry.oracle.com to download the container images
-- SQLCL
-   > brew install sqlcl
-   sqlcl requires Java 11+. You can install the latest version with:
-   > brew install --cask temurin
-   > export PATH=/opt/homebrew/Caskroom/sqlcl/25.1.1.113.2054/sqlcl/bin:"$PATH"
- - Skopeo - tool for managing images and can be installed using brew.
-   > brew install skopeo
-   > brew install jq
-      
-   
-
+- SQLCL<br>
+  % brew install sqlcl<br>
+  sqlcl requires Java 11+. You can install the latest version with:<br>
+  % brew install --cask temurin<br>
+  % export PATH=/opt/homebrew/Caskroom/sqlcl/25.1.1.113.2054/sqlcl/bin:"$PATH"<br>
+ - Skopeo recommended. (tool for managing images and can be installed using brew)<br>
+  % brew install skopeo<br>
+  % brew install jq<br>
 ---
 
 ### ⚙️ Setup Instructions
 
---- Check podman version
-> podman -v
-**podman version 5.5.2** 
+--- Check podman version <br>
+% podman -v <br>
+> podman version 5.5.2 
 
---- Confirm current hardware platform
-> arch
-**arm64** 
+--- Confirm current hardware platform <br>
+% arch <br>
+> arm64 
 
---- Check MacOS version
-> sw_vers -ProductVersion
-**14.7.6** 
+--- Check MacOS version <br>
+% sw_vers -ProductVersion<br>
+>14.7.6 
 
---- Initialize VM 
-> podman machine init --cpus 4 --memory 8192 --disk-size 50 
-> podman machine start
-> podman machine ls
+--- Initialize VM <br>
+% podman machine init --cpus 4 --memory 8192 --disk-size 50 <br>
+% podman machine start <br>
+% podman machine ls <br>
 
 **NAME                     VM TYPE     CREATED        LAST UP            CPUS        MEMORY      DISK SIZE**
 **podman-machine-default*  applehv     2 minutes ago  Currently running  4           8GiB        50GiB**
