@@ -118,15 +118,15 @@ podman volume inspect oradata
 
 ![Image](https://github.com/user-attachments/assets/0d4a4271-7f08-434e-ad8c-2e3943744951)
 
-> Create persistent volume to host APEX files  <br>
+--- Create persistent volume to host APEX files
 ```bash
 podman volume create --label version=24.2  apexdbbin
 ```
-> Create persistent volume to host APEX files on ORDS container  <br>
+--- Create persistent volume to host APEX files on ORDS container
 ```bash
 podman volume create --label version=24.2  ordsapex
 ```
-> Create persistent volume to host ORDS config on ORDS container  <br>
+--- Create persistent volume to host ORDS config on ORDS container
 ```bash
 podman volume create --label version=25.1.1  ordsconfig
 ```
@@ -159,9 +159,6 @@ podman network inspect oranetwork
 ```
 ![Image](https://github.com/user-attachments/assets/eda8d846-7b94-4be7-8d49-39e03a6381e8)
 
-```bash
-podman inspect oracle23ai | grep IPAddress
-```
 
 --- Start the container <br>
 ```bash
@@ -185,14 +182,14 @@ podman ps
 ```bash
 podman logs oracle23ai
 ```
+--- grep ip address <br> 
+```bash
+podman inspect oracle23ai | grep IPAddress
+```
 --- Connect to database from your mac terminal <br> 
 ```bash
 sql sys/"TypeYourDBPasswordHere"@//localhost:1521/FREE as sysdba
 ```
-
-Connected to:
-Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free**
-Version 23.8.0.25.04**
 
 ```bash
 select INSTANCE_NAME, HOST_NAME, VERSION_FULL, EDITION from v$instance;
@@ -204,13 +201,9 @@ select INSTANCE_NAME, HOST_NAME, VERSION_FULL, EDITION from v$instance;
 ```bash
 podman exec -it oracle23ai sqlplus / as sysdba
 ```
-
-Connected to:
-Oracle Database 23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free
-Version 23.8.0.25.04
-
-SQL> select INSTANCE_NAME, HOST_NAME, VERSION_FULL, EDITION from v$instance;
-
+```bash
+select INSTANCE_NAME, HOST_NAME, VERSION_FULL, EDITION from v$instance;
+```
 ![Image](https://github.com/user-attachments/assets/641aa5a1-44cf-4e0a-a5b7-9769e7d64443)
 
 --- Connect to container shell <br>
@@ -220,7 +213,7 @@ podman exec -it oracle23ai /bin/sh
 ### ⚙️ Setup Instructions for ORDS + APEX
 
 --- Pull ORDS 25.1.1 Image from Oracle Container Registry <br>
-> We are using the 25.1.1 version instead of latest, because latest version had problems, will be fixed <br>
+> We are using the 25.1.1 version instead of latest, because latest version has some problems, will be fixed <br>
 
 ```bash
 podman pull container-registry.oracle.com/database/ords:25.1.1 --tls-verify=false
@@ -232,16 +225,16 @@ podman image list
 > from https://www.oracle.com/tools/downloads/apex-downloads/ to Downloads folder <br>
 > 2) Unzip the apex_24.2_en.zip to Downloads folder  <br>
 
-> Verify the contents of APEX unzipped folder<br>
+--- Verify the contents of APEX unzipped folder<br>
 ```bash
 cd  ~/downloads/apex_24.2_en/apex
 ls
 ```
-> Copy all files to container apexbin folder<br>
+--- Copy all files to container apexbin folder
 ```bash
 podman cp ~/downloads/apex_24.2_en/apex/. oracle23ai:/opt/oracle/apex
 ```
-> Connect to container and verify that files exists<br>
+--- Connect to container and verify that files exists
 ```bash
 podman exec -it oracle23ai /bin/sh
 ```
@@ -255,7 +248,7 @@ sqlplus / as sysdba
 ```bash
 show pdbs
 ```
-> Create new pdb for APEX Schema<br>
+--- Create new pdb for APEX Schema
 ```bash
 CREATE PLUGGABLE DATABASE APEXPDB 
   ADMIN USER APEXADM IDENTIFIED BY "TypeYourPasswordHere"
@@ -270,18 +263,18 @@ CREATE PLUGGABLE DATABASE APEXPDB
 ```bash
 alter pluggable database APEXPDB open read write;
 ```
+--- Verify new pdb created and in read write mode
 ```bash
 show pdbs
 ```
-> Verify new pdb created and in read write mode<br>
-> Alter session to connect to apex pdb, we need to run the install scripts in apex pdb <br>
+--- Alter session to connect to apex pdb, we need to run the install scripts in apex pdb
 ```bash
 ALTER SESSION SET CONTAINER = APEXPDB;
 ```
 ```bash
 @apexins.sql SYSAUX SYSAUX TEMP /i/
 ```
-> Make sure you are still in apex pdb <br>
+--- Make sure you are still in apex pdb
 ```bash
 show con_name;
 ```
@@ -292,14 +285,14 @@ show con_name;
 > admin email : "type your email here"<br>
 > admin password : "type your password here"  must be complex password, case sensitive with special character <br>
 
-> Make sure you are still in apex pdb <br>
+--- Make sure you are still in apex pdb
 ```bash
 show con_name;
 ```
 ```bash
 alter user apex_public_user identified by "TypePasswordHere" account unlock;
 ```
-> Make sure you are still in apex pdb <br>
+--- Make sure you are still in apex pdb
 ```bash
 show con_name;
 ```
@@ -309,14 +302,15 @@ show con_name;
 > Enter a password for the APEX_LISTENER user <br>
 > Enter a password for the APEX_REST_PUBLIC_USER user <br>
 
-> DB Apex Installation complete, you can now exit <br>
+--- DB Apex Installation complete, you can now exit
 ```bash
 exit
 ```
-> Test database connection to APEX pdb <br>
+--- Test database connection to APEX pdb
 ```bash
 sql sys/"TypeYourSysPasswordHere"@//localhost:1521/APEXPDB as sysdba
 ```
+--- Start ORDS Container
 ```bash
 podman run --rm --name ords \
 --network=oranetwork \
@@ -330,11 +324,11 @@ podman run --rm --name ords \
 --volume ordsapex:/opt/oracle/apex \
 container-registry.oracle.com/database/ords:25.1.1
 ```
-> We need to copy apex files to container <br>
+--- We need to copy apex files to ORDS container
 ```bash
 podman cp ~/downloads/apex_24.2_en/apex/. ords:/opt/oracle/apex
 ```
-> We need to stop and rerun the container after we copied the apex files <br>
+--- We need to stop and rerun the container after we copied the apex files
 ```bash
 podman stop ords
 ```
@@ -351,7 +345,7 @@ podman run --rm --name ords \
 --volume ordsapex:/opt/oracle/apex \
 container-registry.oracle.com/database/ords:25.1.1
 ```
-> We can now test APEX installation <br>
+--- We can now test APEX installation
 > From your browser goto : http://localhost:8080/ords , click GO under Oracle APEX <br>
 
 ![Image](https://github.com/user-attachments/assets/05c8a0cf-c7fe-4349-8c10-d8bf9ead9615)
@@ -360,7 +354,7 @@ container-registry.oracle.com/database/ords:25.1.1
 
 ![Image](https://github.com/user-attachments/assets/f2138fd9-fd93-4d7d-a884-b8bb2fb181c1)
 
-> You can Create Workspace and start using APEX on your Mac  <br>
+--- You can Create Workspace and start using APEX on your Mac
 
 ![Image](https://github.com/user-attachments/assets/126dcae7-25a5-4271-a875-2c7c67a0266c)
 
