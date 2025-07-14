@@ -344,7 +344,7 @@ podman cp ~/downloads/apex_24.2_en/apex/. ords:/opt/oracle/apex
 podman stop ords
 ```
 ```bash
-podman run --rm --name ords \
+podman run --detach --name ords \
 --network=oranetwork \
 -p 8080:8080 \
 -p 27017:27017 \
@@ -356,6 +356,11 @@ podman run --rm --name ords \
 --volume ordsapex:/opt/oracle/apex \
 container-registry.oracle.com/database/ords:25.1.1
 ```
+--- Verify that ords started
+```bash
+podman logs ords
+```
+
 --- We can now test APEX installation
 > From your browser goto : http://localhost:8080/ords , click GO under Oracle APEX <br>
 
