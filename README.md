@@ -263,6 +263,17 @@ CREATE PLUGGABLE DATABASE APEXPDB
 ```bash
 alter pluggable database APEXPDB open read write;
 ```
+> Save state of pdb in order to open pdb in read write mode during next db startup, otherwise it will stay in mount mode and container will be in unhealhy state at next startup! <br>
+
+```bash
+alter pluggable database APEXPDB save state;
+```
+> Verify the state! <br>
+
+```bash
+select con_name, instance_name, state FROM dba_pdb_saved_states;
+```
+
 --- Verify new pdb created and in read write mode
 ```bash
 show pdbs
