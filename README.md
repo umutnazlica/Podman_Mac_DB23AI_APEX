@@ -323,7 +323,7 @@ sql sys/"TypeYourSysPasswordHere"@//localhost:1521/APEXPDB as sysdba
 ```
 --- Start ORDS Container
 ```bash
-podman run --rm --name ords \
+podman run --detach --name ords \
 --network=oranetwork \
 -p 8080:8080 \
 -p 27017:27017 \
