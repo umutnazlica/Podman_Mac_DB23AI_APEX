@@ -122,12 +122,19 @@ podman volume inspect oradata
 ```bash
 podman volume create --label version=24.2  apexdbbin
 ```
-
+> Create persistent volume to host APEX files on ORDS container  <br>
+```bash
+podman volume create --label version=24.2  ordsapex
+```
+> Create persistent volume to host ORDS config on ORDS container  <br>
+```bash
+podman volume create --label version=25.1.1  ordsconfig
+```
 --- Setup Podman secret to manage the database password <br>
 ```bash
 pwd
 ```
-make sure you are in the right folder to store the text file, if not cd to that folder <br>
+make sure you are in the right folder to store the password text file, if not cd to that folder <br>
 ```bash
 echo -n <TypeYourDBPasswordHere> > ./oradbsecret.txt
 ```
@@ -290,7 +297,7 @@ show con_name;
 show con_name;
 ```
 ```bash
-alter user apex_public_user identified by P4ssw0rd1234 account unlock;
+alter user apex_public_user identified by "TypePasswordHere" account unlock;
 ```
 > Make sure you are still in apex pdb <br>
 ```bash
@@ -308,7 +315,7 @@ exit
 ```
 > Test database connection to APEX pdb <br>
 ```bash
-sql sys/"TypeYourPasswordHere"@//localhost:1521/APEXPDB as sysdba
+sql sys/"TypeYourSysPasswordHere"@//localhost:1521/APEXPDB as sysdba
 ```
 ```bash
 podman run --rm --name ords \
@@ -318,7 +325,7 @@ podman run --rm --name ords \
 -e DBHOST=oracle23ai \
 -e DBPORT=1521 \
 -e DBSERVICENAME=APEXPDB \
--e ORACLE_PWD=P4ssw0rd1234 \
+-e ORACLE_PWD="TypeYourSysPasswordHere" \
 --volume ordsconfig:/etc/ords/config \
 --volume ordsapex:/opt/oracle/apex \
 container-registry.oracle.com/database/ords:25.1.1
@@ -339,7 +346,7 @@ podman run --rm --name ords \
 -e DBHOST=oracle23ai \
 -e DBPORT=1521 \
 -e DBSERVICENAME=APEXPDB \
--e ORACLE_PWD=P4ssw0rd1234 \
+-e ORACLE_PWD="TypeYourSysPasswordHere" \
 --volume ordsconfig:/etc/ords/config \
 --volume ordsapex:/opt/oracle/apex \
 container-registry.oracle.com/database/ords:25.1.1
@@ -365,3 +372,5 @@ container-registry.oracle.com/database/ords:25.1.1
    ```bash
    git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
    cd YOUR_REPO
+
+  ```
