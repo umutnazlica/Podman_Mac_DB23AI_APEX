@@ -37,7 +37,7 @@ This guide includes information related how to:
   brew install --cask temurin
   ```
   ```bash
-  export PATH=/opt/homebrew/Caskroom/sqlcl/25.1.1.113.2054/sqlcl/bin:"$PATH"
+  export PATH=/opt/homebrew/Caskroom/sqlcl/25.2.2.199.0918/sqlcl/bin:"$PATH"
   ```
 - Skopeo recommended. (tool for managing images and can be installed using brew)<br>
   ```bash
